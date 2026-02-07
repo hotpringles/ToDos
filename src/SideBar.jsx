@@ -16,7 +16,7 @@ function SideBar() {
           <li key={item.path}>
             <NavLink
               className={({ isActive }) =>
-                `font-mono font-medium  cursor-pointer rounded-sm p-2 flex items-center transition-transform duration-150 active:scale-97 active:text-gray-500
+                `font-medium  cursor-pointer rounded-sm p-2 flex items-center transition-transform duration-150 active:scale-97 active:text-gray-500
                ${isActive ? "bg-gray-300 font-bold text-black" : "text-gray-500 hover:bg-gray-200 hover:text-black"}`
               }
               to={item.path}
@@ -30,13 +30,13 @@ function SideBar() {
         <NavLink
           to="/setting"
           className={({ isActive }) =>
-            `font-mono font-medium  cursor-pointer rounded-sm p-2 flex items-center transition-transform duration-150 active:scale-97 active:text-gray-500
+            `font-medium  cursor-pointer rounded-sm p-2 flex items-center transition-transform duration-150 active:scale-97 active:text-gray-500
                hover:bg-gray-200 hover:text-black"`
           }
         >
           Setting
         </NavLink>
-        <button className="font-mono font-medium  cursor-pointer rounded-sm p-2 flex items-center transition-transform duration-150 active:scale-97 active:text-gray-500 hover:bg-gray-200 hover:text-black">
+        <button className="font-medium  cursor-pointer rounded-sm p-2 flex items-center transition-transform duration-150 active:scale-97 active:text-gray-500 hover:bg-gray-200 hover:text-black">
           LogOut
         </button>
       </div>

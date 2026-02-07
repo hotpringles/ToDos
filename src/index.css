@@ -1,8 +1,43 @@
 @import "tailwindcss";
 
+/* 로컬에 저장된 폰트 파일을 직접 불러옵니다 */
+@font-face {
+  font-family: "LINESeedKR";
+  src: url("./assets/fonts/LINESeedKR-Rg.woff2") format("woff2"); /* 경로 확인 필수! */
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "LINESeedKR";
+  src: url("./assets/fonts/LINESeedKR-Bd.woff2") format("woff2");
+  font-weight: 700;
+}
+
+@theme {
+  --font-sans: "LINESeedKR", sans-serif;
+}
+
 @layer base {
-  html,
   body {
-    @apply font-mono;
+    font-family: var(--font-sans) !important;
   }
+}
+
+/* --- 스크롤바 커스텀 (유지) --- */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-clip: padding-box;
+  border: 2px solid transparent;
+  background-color: var(--color-gray-200);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-gray-300);
 }

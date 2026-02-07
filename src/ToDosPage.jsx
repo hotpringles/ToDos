@@ -1,8 +1,10 @@
 import WeeklyCalendar from "./WeeklyCalendar";
 import AddBox from "./AddBox";
 import { format, startOfToday } from "date-fns";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import CategorySelect from "./CategorySelect";
+import PrioritySelect from "./PriorityCheck";
+import ToDo from "./ToDo";
 
 function DonutChart({ percent, color = "text-blue-400" }) {
   // [수학 공식 파트]
@@ -51,7 +53,7 @@ function DonutChart({ percent, color = "text-blue-400" }) {
       </svg>
 
       {/* 중앙 텍스트 (absolute로 띄워서 가운데 배치) */}
-      <span className="absolute text-md font-bold text-gray-700">
+      <span className="absolute translate-y-[1px] text-sm font-bold text-gray-700 ">
         {percent}%
       </span>
     </div>
@@ -61,10 +63,81 @@ function DonutChart({ percent, color = "text-blue-400" }) {
 function ToDosPage() {
   const [selectedDate, setSelectedDate] = useState(startOfToday());
   const [priority, setPriority] = useState("high");
+  const [todos, setTodos] = useState([
+    {
+      id: 1,
+      priority: "high",
+      category: "Inbox",
+      contents: "안녕",
+      isCompleted: false,
+    },
+    {
+      id: 2,
+      priority: "medium",
+      category: "Inbox",
+      contents: "가을",
+      isCompleted: false,
+    },
+    {
+      id: 3,
+      priority: "medium",
+      category: "Inbox",
+      contents: "여름",
+      isCompleted: false,
+    },
+    {
+      id: 4,
+      priority: "high",
+      category: "Inbox",
+      contents: "계절",
+      isCompleted: false,
+    },
+    {
+      id: 5,
+      priority: "low",
+      category: "Inbox",
+      contents: "눈물",
+      isCompleted: false,
+    },
+  ]);
+  const [percent, setPercent] = useState(0);
+  useEffect(() => {
+    let count = 0;
+    todos.forEach((todo) => {
+      if (todo.isCompleted) {
+        count++;
+      }
+    });
+    setPercent((count / todos.length) * 100);
+  }, [todos]);
+
+  const handleToggle = (id) => {
+    setTodos((prev) =>
+      prev.map((todo) =>
+        todo.id === id ? { ...todo, isCompleted: !todo.isCompleted } : todo,
+      ),
+    );
+  };
+  const sortedTodos = [...todos].sort((a, b) => a.isCompleted - b.isCompleted);
+
+  const [isAtBottom, setIsAtBottom] = useState(false);
+  const scrollRef = useRef(null);
+
+  const handleScroll = () => {
+    if (scrollRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
+      const isBottom = scrollTop + clientHeight >= scrollHeight - 5;
+      setIsAtBottom(isBottom);
+    }
+  };
+
+  useEffect(() => {
+    handleScroll();
+  }, [todos]);
 
   return (
     <div className="h-screen p-8 bg-gray-100 flex flex-col">
-      <div className="mb-4 font-mono flex items-center">
+      <div className="mb-4 flex items-center">
         <span className="text-3xl font-bold mr-2">ToDos</span>
         <span className="text-md text-gray-500">
           / {format(selectedDate, "EEEE, MMM d")}
@@ -74,47 +147,73 @@ function ToDosPage() {
           changeDate={setSelectedDate}
         />
       </div>
-
-      <div className="mb-4 font-mono font-bold bg-white border border-gray-200 rounded-2xl flex justify-center items-centers">
-        <div className="m-4 w-fit flex gap-1">
-          <DonutChart percent={80} />
-          <div className="w-fit flex flex-col text-right">
-            <span className="text-md text-gray-500">Achievement</span>
-            <span className="text-2xl">8/12</span>
-          </div>
-        </div>
-        <div className="my-4 grow flex items-center border-l border-gray-200 px-4">
-          <span className="text-gray-500 mr-3">Road List</span>
-          <div>안녕</div>
-        </div>
-      </div>
-      <div className="grow flex">
+      <div className="grow flex min-h-0">
         <div className="grow mr-3 bg-white border border-gray-200 rounded-2xl flex flex-col">
-          <div className="p-4 font-mono border-gray-200 border-b flex justify-between items-center">
+          <div className="p-4 border-gray-200 border-b flex justify-between items-center">
             <span className="font-bold text-md">Daily task</span>
             <span className="text-sm">View All</span>
           </div>
-          <div className="p-4">안녕</div>
+          {/* <div
+            className="grow overflow-y-auto
+            [mask-image:linear-gradient(to_bottom,black_90%,transparent_100%)]
+            [-webkit-mask-image:linear-gradient(to_bottom,black_90%,transparent_100%)]"
+          >
+            {sortedTodos.map((todo) => (
+              <ToDo
+                key={todo.id}
+                priority={todo.priority}
+                contents={todo.contents}
+                category={todo.category}
+                isCompleted={todo.isCompleted}
+                handleToggle={() => handleToggle(todo.id)}
+              />
+            ))}
+          </div> */}
+          {/* --- [수정된 리스트 영역] --- */}
+          <div
+            ref={scrollRef}
+            onScroll={handleScroll}
+            className={`grow overflow-y-auto pr-2 transition-all duration-500 
+    ${
+      isAtBottom
+        ? "[mask-image:none]"
+        : `[mask-image:linear-gradient(to_bottom,black_80%,transparent_100%),linear-gradient(black,black)]`
+    }
+    
+    /* 1. 왼쪽 마스크는 스크롤바 공간을 제외한 만큼(calc), 오른쪽 마스크는 딱 스크롤바만큼(12px) */
+    [mask-size:calc(100%-12px)_100%,12px_100%]
+    [-webkit-mask-size:calc(100%-12px)_100%,12px_100%]
+
+    /* 2. 첫 번째 마스크는 왼쪽(left)에, 두 번째 마스크는 오른쪽(right)에 배치 */
+    [mask-position:left,right]
+    [-webkit-mask-position:left,right]
+
+    /* 3. 마스크가 반복되지 않게 설정 */
+    [mask-repeat:no-repeat]
+    [-webkit-mask-repeat:no-repeat]
+  `}
+          >
+            {sortedTodos.map((todo) => (
+              <ToDo
+                key={todo.id}
+                {...todo}
+                handleToggle={() => handleToggle(todo.id)}
+              />
+            ))}
+            <div className="h-2" />
+          </div>
+          {/* --- [리스트 영역 끝] --- */}
+          <div className="p-4">
+            <div className="flex ml-2 mb-1 items-center gap-1">
+              <PrioritySelect priority={priority} setPriority={setPriority} />
+              <div className="w-[1px] h-4 bg-gray-300 mx-1" />
+              <CategorySelect />
+            </div>
+            <AddBox />
+          </div>
         </div>
         <div className="w-[350px] p-4 bg-white border border-gray-200 rounded-2xl">
-          <div className="flex ml-2 mb-1 items-center gap-1">
-            <span className="mr-2 text-sm text-gray-500">Priority</span>
-            <button
-              onClick={() => setPriority("high")}
-              className="h-4 w-4 cursor-pointer rounded-full bg-red-500"
-            />
-            <button
-              onClick={() => setPriority("medium")}
-              className="h-4 w-4 cursor-pointer rounded-full bg-orange-500"
-            />
-            <button
-              onClick={() => setPriority("low")}
-              className="h-4 w-4 cursor-pointer rounded-full bg-yellow-400"
-            />
-            <div className="w-[1px] bg-gray-300"></div>
-            <CategorySelect />
-          </div>
-          <AddBox />
+          <DonutChart percent={percent} />
         </div>
       </div>
     </div>

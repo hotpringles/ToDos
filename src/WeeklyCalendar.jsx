@@ -19,7 +19,7 @@ function WeeklyCalendar({ selectedDate, changeDate }) {
             className="relative flex flex-col items-center rounded-xl py-1 px-2 cursor-pointer focus:outline-none"
           >
             <span
-              className={`text-xs z-10 ${isSelected ? "text-white" : "text-gray-400"}`}
+              className={`text-xs scale-75 z-10 ${isSelected ? "text-white" : "text-gray-400"}`}
             >
               {format(date, "eee").toUpperCase()}
             </span>
