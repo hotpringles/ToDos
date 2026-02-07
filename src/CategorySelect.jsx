@@ -22,7 +22,6 @@ const CategorySelect = () => {
 
   return (
     <div className="relative" ref={dropdownRef}>
-      {/* 라벨 (v4 font-mono 적용) */}
       <div className="flex items-center gap-3">
         <span className="text-xs font-black text-gray-500 tracking-tighter uppercase">
           Category

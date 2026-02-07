@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check } from "lucide-react";
+import { Check, Tag } from "lucide-react";
 
 function ToDo({ priority, category, contents, isCompleted, handleToggle }) {
   const priorityStyle = {
@@ -33,13 +33,20 @@ function ToDo({ priority, category, contents, isCompleted, handleToggle }) {
         >
           {contents}
         </span>
-        <div className="flex items-center gap-2 text-xs scale-90 origin-left">
+        <div className="flex items-center gap-1 font-semibold text-xs scale-90 origin-left">
           <span
-            className={`px-2 py-1 rounded-lg border ${priorityStyle[priority]}`}
+            className={`px-2 py-1 mr-2 rounded-lg border ${priorityStyle[priority]}`}
           >
             {priority}
           </span>
-          <span>{category}</span>
+          <Tag
+            size={16}
+            strokeWidth={1.5}
+            stroke="white"
+            fill="currentColor"
+            className="text-gray-500"
+          />
+          <span className="text-gray-500">{category}</span>
         </div>
       </div>
     </div>

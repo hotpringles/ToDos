@@ -100,15 +100,56 @@ function ToDosPage() {
       isCompleted: false,
     },
   ]);
-  const [percent, setPercent] = useState(0);
+
+  // 최적화 고민 필요 (ex. useMemo로 관리하면 더 낫지 않을까?)
+  const [totalCount, setTotalCount] = useState(0);
+  const [highCount, setHighCount] = useState({});
+  const [mediumCount, setMediumCount] = useState({});
+  const [lowCount, setLowCount] = useState({});
+
   useEffect(() => {
-    let count = 0;
+    setTotalCount(0);
     todos.forEach((todo) => {
       if (todo.isCompleted) {
-        count++;
+        setTotalCount((prev) => prev + 1);
       }
     });
-    setPercent((count / todos.length) * 100);
+  }, [todos]);
+
+  useEffect(() => {
+    setHighCount({
+      each: 0,
+      total: 0,
+    });
+    setMediumCount({
+      each: 0,
+      total: 0,
+    });
+    setLowCount({
+      each: 0,
+      total: 0,
+    });
+    todos.forEach((todo) => {
+      if (todo.priority === "high") {
+        setHighCount((prev) =>
+          todo.isCompleted
+            ? { each: prev.each + 1, total: prev.total + 1 }
+            : { ...prev, total: prev.total + 1 },
+        );
+      } else if (todo.priority === "medium") {
+        setMediumCount((prev) =>
+          todo.isCompleted
+            ? { each: prev.each + 1, total: prev.total + 1 }
+            : { ...prev, total: prev.total + 1 },
+        );
+      } else {
+        setLowCount((prev) =>
+          todo.isCompleted
+            ? { each: prev.each + 1, total: prev.total + 1 }
+            : { ...prev, total: prev.total + 1 },
+        );
+      }
+    });
   }, [todos]);
 
   const handleToggle = (id) => {
@@ -174,24 +215,24 @@ function ToDosPage() {
             ref={scrollRef}
             onScroll={handleScroll}
             className={`grow overflow-y-auto pr-2 transition-all duration-500 
-    ${
-      isAtBottom
-        ? "[mask-image:none]"
-        : `[mask-image:linear-gradient(to_bottom,black_80%,transparent_100%),linear-gradient(black,black)]`
-    }
-    
-    /* 1. 왼쪽 마스크는 스크롤바 공간을 제외한 만큼(calc), 오른쪽 마스크는 딱 스크롤바만큼(12px) */
-    [mask-size:calc(100%-12px)_100%,12px_100%]
-    [-webkit-mask-size:calc(100%-12px)_100%,12px_100%]
+                  ${
+                    isAtBottom
+                      ? "[mask-image:none]"
+                      : `[mask-image:linear-gradient(to_bottom,black_80%,transparent_100%),linear-gradient(black,black)]`
+                  }
+                  
+                  /* 1. 왼쪽 마스크는 스크롤바 공간을 제외한 만큼(calc), 오른쪽 마스크는 딱 스크롤바만큼(12px) */
+                  [mask-size:calc(100%-12px)_100%,12px_100%]
+                  [-webkit-mask-size:calc(100%-12px)_100%,12px_100%]
 
-    /* 2. 첫 번째 마스크는 왼쪽(left)에, 두 번째 마스크는 오른쪽(right)에 배치 */
-    [mask-position:left,right]
-    [-webkit-mask-position:left,right]
+                  /* 2. 첫 번째 마스크는 왼쪽(left)에, 두 번째 마스크는 오른쪽(right)에 배치 */
+                  [mask-position:left,right]
+                  [-webkit-mask-position:left,right]
 
-    /* 3. 마스크가 반복되지 않게 설정 */
-    [mask-repeat:no-repeat]
-    [-webkit-mask-repeat:no-repeat]
-  `}
+                  /* 3. 마스크가 반복되지 않게 설정 */
+                  [mask-repeat:no-repeat]
+                  [-webkit-mask-repeat:no-repeat]
+                `}
           >
             {sortedTodos.map((todo) => (
               <ToDo
@@ -212,8 +253,64 @@ function ToDosPage() {
             <AddBox />
           </div>
         </div>
-        <div className="w-[350px] p-4 bg-white border border-gray-200 rounded-2xl">
-          <DonutChart percent={percent} />
+        <div className="w-[350px] p-4 flex flex-col gap-2 bg-white border border-gray-200 rounded-2xl">
+          <div className="flex justify-around">
+            <div className="flex flex-col text-center h-fit">
+              <span
+                className={`text-lg font-bold transition-all duration-300 ease-in-out
+               ${highCount.each === 0 ? "text-red-300" : "text-red-500"}`}
+              >
+                High
+              </span>
+              <span
+                className={`font-semibold transition-all duration-300 ease-in-out
+               ${highCount.each === 0 ? "text-red-300" : "text-red-500"}`}
+              >
+                {highCount.each} / {highCount.total}
+              </span>
+            </div>
+            <div className="flex flex-col text-center h-fit">
+              <span
+                className={`text-lg font-bold transition-all duration-300 ease-in-out
+               ${mediumCount.each === 0 ? "text-orange-300" : "text-orange-500"}`}
+              >
+                Medium
+              </span>
+              <span
+                className={`font-semibold transition-all duration-300 ease-in-out
+               ${mediumCount.each === 0 ? "text-orange-300" : "text-orange-500"}`}
+              >
+                {mediumCount.each} / {mediumCount.total}
+              </span>
+            </div>
+            <div
+              className={`flex flex-col text-center text-lg font-semibold h-fit ${lowCount.each === 0 ? "text-yellow-200" : "text-yellow-400"}`}
+            >
+              <span className="transition-all duration-300 ease-in-out">
+                Low
+              </span>
+              <span className={"transition-all duration-300 ease-in-out"}>
+                {lowCount.each} / {lowCount.total}
+              </span>
+            </div>
+          </div>
+          <div className="flex gap-2 rounded-xl border border-gray-200 p-1 justify-around items-center">
+            <DonutChart percent={(totalCount / todos.length) * 100} />
+            <div className="flex flex-col text-right ">
+              <span
+                className={`text-lg font-bold transition-all duration-300 ease-in-out
+               ${totalCount === 0 ? "text-gray-500" : "text-black"}`}
+              >
+                Ahcheivement Rate
+              </span>
+              <span
+                className={`text-md font-semibold transition-all duration-300 ease-in-out
+               ${totalCount === 0 ? "text-gray-500" : "text-black"}`}
+              >
+                {totalCount} / {todos.length}
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
