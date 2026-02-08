@@ -1,6 +1,10 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Check } from "lucide-react";
 
+const HIGH = 1;
+const MEDIUM = 2;
+const LOW = 3;
+
 function PrioritySelect({ priority, setPriority }) {
   return (
     <div className="flex justify-center items-center gap-1">
@@ -8,11 +12,11 @@ function PrioritySelect({ priority, setPriority }) {
         priority
       </span>
       <button
-        onClick={() => setPriority("high")}
-        className={`h-4 w-4 flex items-center justify-center cursor-pointer rounded-full bg-red-500 transition-all ${priority === "high" ? "scale-110 shadow-[0_0_10px_rgba(239,68,68,0.6)]" : "opacity-50 hover:opacity-100"}`}
+        onClick={() => setPriority(HIGH)}
+        className={`h-4 w-4 flex items-center justify-center cursor-pointer rounded-full bg-rose-500 transition-all ${priority === HIGH ? "scale-110 shadow-[0_0_10px_rgba(244,63,94,0.6)]" : "opacity-50 hover:opacity-100"}`}
       >
         <AnimatePresence>
-          {priority === "high" && (
+          {priority === HIGH && (
             <motion.div
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -26,11 +30,11 @@ function PrioritySelect({ priority, setPriority }) {
         </AnimatePresence>
       </button>
       <button
-        onClick={() => setPriority("medium")}
-        className={`h-4 w-4 flex items-center justify-center cursor-pointer rounded-full bg-orange-500 transition-all ${priority === "medium" ? "scale-110 shadow-[0_0_8px_rgba(249,115,22,0.6)]" : "opacity-50 hover:opacity-100"}`}
+        onClick={() => setPriority(MEDIUM)}
+        className={`h-4 w-4 flex items-center justify-center cursor-pointer rounded-full bg-amber-500 transition-all ${priority === MEDIUM ? "scale-110 shadow-[0_0_10px_rgba(245,158,11,0.6)]" : "opacity-50 hover:opacity-100"}`}
       >
         <AnimatePresence>
-          {priority === "medium" && (
+          {priority === MEDIUM && (
             <motion.div
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -44,11 +48,11 @@ function PrioritySelect({ priority, setPriority }) {
         </AnimatePresence>
       </button>
       <button
-        onClick={() => setPriority("low")}
-        className={`h-4 w-4 flex items-center justify-center cursor-pointer rounded-full bg-yellow-400 transition-all ${priority === "low" ? "scale-110 shadow-[0_0_10px_rgba(250,204,21,0.6)]" : "opacity-50 hover:opacity-100"}`}
+        onClick={() => setPriority(LOW)}
+        className={`h-4 w-4 flex items-center justify-center cursor-pointer rounded-full bg-sky-400 transition-all ${priority === LOW ? "scale-110 shadow-[0_0_10px_rgba(14,165,233,0.6)]" : "opacity-50 hover:opacity-100"}`}
       >
         <AnimatePresence>
-          {priority === "low" && (
+          {priority === LOW && (
             <motion.div
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}

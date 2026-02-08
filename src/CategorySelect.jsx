@@ -7,15 +7,13 @@ import {
   useDragControls,
 } from "framer-motion";
 
-const CategorySelect = () => {
+const CategorySelect = ({
+  categories,
+  setCategories,
+  selected,
+  setSelected,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [categories, setCategories] = useState([
-    "학업",
-    "과제",
-    "프로젝트",
-    "운동",
-  ]);
-  const [selected, setSelected] = useState(categories[0]);
   const [inputValue, setInputValue] = useState("");
   const [isAnyDragging, setIsAnyDragging] = useState(false);
   const dropdownRef = useRef(null);
@@ -238,7 +236,7 @@ const CategoryItem = memo(
                   exit={{ opacity: 0, scale: 0.5 }}
                   transition={{ duration: 0.1 }}
                   onClick={(e) => deleteCategory(e, cat)}
-                  className="p-1.5 hover:bg-red-50 hover:text-red-500 rounded-lg transition-colors"
+                  className="p-1.5 hover:bg-rose-50 hover:text-rose-500 rounded-lg transition-colors"
                 >
                   <X size={12} />
                 </motion.button>

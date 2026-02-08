@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, Tag } from "lucide-react";
+import { Check, Tag, Ellipsis } from "lucide-react";
+import ToDoSettings from "./ToDoSettings";
 
 function ToDo({ priority, category, contents, isCompleted, handleToggle }) {
   const priorityToString = {
@@ -8,11 +9,29 @@ function ToDo({ priority, category, contents, isCompleted, handleToggle }) {
     2: "medium", // medium
     3: "low", // low
   };
+
   const priorityStyle = {
-    high: "border-red-300 bg-red-50 text-red-500",
-    medium: "border-orange-300 bg-orange-50 text-orange-500",
-    low: "border-yellow-300 bg-yellow-50 text-yellow-500",
+    high: "border-rose-300 bg-rose-50 text-rose-500",
+    medium: "border-amber-300 bg-amber-50 text-amber-500",
+    low: "border-sky-300 bg-sky-50 text-sky-500",
   };
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleMenuToggle = () => {
+    setIsOpen((prev) => !prev);
+  };
+
+  const menuVariants = {
+    hidden: { opacity: 0, scale: 0.95, y: -10, transition: { duration: 0.2 } },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      transition: { type: "spring", duration: 0.3, bounce: 0.4 },
+    },
+  };
+
   return (
     <div className="flex items-center gap-4 h-[90px] p-4 border-b border-gray-200">
       <button
@@ -54,6 +73,7 @@ function ToDo({ priority, category, contents, isCompleted, handleToggle }) {
           <span className="text-gray-500">{category}</span>
         </div>
       </div>
+      <ToDoSettings />
     </div>
   );
 }

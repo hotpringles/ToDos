@@ -1,7 +1,7 @@
 import WeeklyCalendar from "./WeeklyCalendar";
 import AddBox from "./AddBox";
 import { format, startOfToday } from "date-fns";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import CategorySelect from "./CategorySelect";
 import PrioritySelect from "./PriorityCheck";
 import ToDo from "./ToDo";
@@ -54,7 +54,7 @@ function DonutChart({ percent, color = "text-blue-400" }) {
 
       {/* 중앙 텍스트 (absolute로 띄워서 가운데 배치) */}
       <span className="absolute translate-y-[1px] text-sm font-bold text-gray-700 ">
-        {percent}%
+        {Math.round(percent) || 0}%
       </span>
     </div>
   );
@@ -104,6 +104,13 @@ function ToDosPage() {
       isCompleted: false,
     },
   ]);
+  const [categories, setCategories] = useState([
+    "학업",
+    "과제",
+    "프로젝트",
+    "운동",
+  ]);
+  const [selectedCategory, setSelectedCategory] = useState(categories[0]);
 
   // 최적화 고민 필요 (ex. useMemo로 관리하면 더 낫지 않을까?)
   const [totalCount, setTotalCount] = useState(0);
@@ -163,9 +170,11 @@ function ToDosPage() {
       ),
     );
   };
-  const sortedTodos = [...todos].sort((a, b) => {
-    return a.isCompleted - b.isCompleted || a.priority - b.priority;
-  });
+  const sortedTodos = useMemo(() => {
+    return [...todos].sort((a, b) => {
+      return a.isCompleted - b.isCompleted || a.priority - b.priority;
+    });
+  }, [todos]);
 
   const [isAtBottom, setIsAtBottom] = useState(false);
   const scrollRef = useRef(null);
@@ -181,6 +190,19 @@ function ToDosPage() {
   useEffect(() => {
     handleScroll();
   }, [todos]);
+
+  const handleAddTodo = (text) => {
+    setTodos((prev) => [
+      ...prev,
+      {
+        id: prev.length + 1,
+        priority: priority,
+        category: selectedCategory,
+        contents: text,
+        isCompleted: false,
+      },
+    ]);
+  };
 
   return (
     <div className="h-screen p-8 bg-gray-100 flex flex-col">
@@ -254,48 +276,57 @@ function ToDosPage() {
             <div className="flex ml-2 mb-1 items-center gap-1">
               <PrioritySelect priority={priority} setPriority={setPriority} />
               <div className="w-[1px] h-4 bg-gray-300 mx-1" />
-              <CategorySelect />
+              <CategorySelect
+                categories={categories}
+                setCategories={setCategories}
+                selected={selectedCategory}
+                setSelected={setSelectedCategory}
+              />
             </div>
-            <AddBox />
+            <AddBox handleAddTodo={handleAddTodo} />
           </div>
         </div>
         <div className="w-[350px] p-4 flex flex-col gap-2 bg-white border border-gray-200 rounded-2xl">
-          <div className="flex justify-around">
-            <div className="flex flex-col text-center h-fit">
+          <div className="flex justify-between">
+            <div className="flex items-center h-fit border border-rose-500 bg-rose-50 p-2 rounded-xl gap-2 text-sm">
               <span
-                className={`text-lg font-bold transition-all duration-300 ease-in-out
-               ${highCount.each === 0 ? "text-red-300" : "text-red-500"}`}
+                className={` font-bold transition-all duration-300 ease-in-out
+               ${highCount.each === 0 ? "text-rose-300" : "text-rose-500"}`}
               >
                 High
               </span>
               <span
                 className={`font-semibold transition-all duration-300 ease-in-out
-               ${highCount.each === 0 ? "text-red-300" : "text-red-500"}`}
+               ${highCount.each === 0 ? "text-rose-300" : "text-rose-500"}`}
               >
                 {highCount.each} / {highCount.total}
               </span>
             </div>
-            <div className="flex flex-col text-center h-fit">
+            <div className="flex items-center h-fit border border-amber-500 bg-amber-50 p-2 rounded-xl gap-2 text-sm">
               <span
-                className={`text-lg font-bold transition-all duration-300 ease-in-out
-               ${mediumCount.each === 0 ? "text-orange-300" : "text-orange-500"}`}
+                className={`font-bold transition-all duration-300 ease-in-out
+               ${mediumCount.each === 0 ? "text-amber-300" : "text-amber-500"}`}
               >
                 Medium
               </span>
               <span
                 className={`font-semibold transition-all duration-300 ease-in-out
-               ${mediumCount.each === 0 ? "text-orange-300" : "text-orange-500"}`}
+               ${mediumCount.each === 0 ? "text-amber-300" : "text-amber-500"}`}
               >
                 {mediumCount.each} / {mediumCount.total}
               </span>
             </div>
             <div
-              className={`flex flex-col text-center text-lg font-semibold h-fit ${lowCount.each === 0 ? "text-yellow-200" : "text-yellow-400"}`}
+              className={`flex items-center h-fit border border-greeb-500 p-2 rounded-xl gap-2 text-sm ${lowCount.each === 0 ? "text-sky-200" : "text-sky-400"}`}
             >
-              <span className="transition-all duration-300 ease-in-out">
+              <span className="font-bold transition-all duration-300 ease-in-out">
                 Low
               </span>
-              <span className={"transition-all duration-300 ease-in-out"}>
+              <span
+                className={
+                  "font-semibold transition-all duration-300 ease-in-out"
+                }
+              >
                 {lowCount.each} / {lowCount.total}
               </span>
             </div>

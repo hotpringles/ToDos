@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { ArrowUp } from "lucide-react";
 
-function AddBox() {
+function AddBox({ handleAddTodo }) {
   const [text, setText] = useState("");
   const handleSubmit = (e) => {
     e.preventDefault();
+    handleAddTodo(text);
     setText("");
   };
   return (
@@ -18,7 +19,7 @@ function AddBox() {
       />
       <button
         type="submit"
-        className="p-2 rounded-xl cursor-pointer bg-black text-white"
+        className="p-2 rounded-xl cursosr-pointer bg-black text-white"
       >
         <ArrowUp size={20} strokeWidth={3} />
       </button>
