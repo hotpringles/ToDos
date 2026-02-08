@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import { Settings, LogOut } from "lucide-react";
 
 const MENU_ITEMS = [
   { path: "/", name: "ToDos" },
@@ -30,13 +31,15 @@ function SideBar() {
         <NavLink
           to="/setting"
           className={({ isActive }) =>
-            `font-medium  cursor-pointer rounded-sm p-2 flex items-center transition-transform duration-150 active:scale-97 active:text-gray-500
+            `font-medium  cursor-pointer rounded-sm p-2 flex items-center gap-2 transition-transform duration-150 active:scale-97 active:text-gray-500
                hover:bg-gray-200 hover:text-black"`
           }
         >
+          <Settings size={14} strokeWidth={2} />
           Setting
         </NavLink>
-        <button className="font-medium  cursor-pointer rounded-sm p-2 flex items-center transition-transform duration-150 active:scale-97 active:text-gray-500 hover:bg-gray-200 hover:text-black">
+        <button className="font-medium  cursor-pointer rounded-sm p-2 flex items-center gap-2 transition-transform duration-150 active:scale-97 active:text-gray-500 hover:bg-gray-200 hover:text-black">
+          <LogOut size={14} strokeWidth={2} />
           LogOut
         </button>
       </div>

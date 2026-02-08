@@ -3,6 +3,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Check, Tag } from "lucide-react";
 
 function ToDo({ priority, category, contents, isCompleted, handleToggle }) {
+  const priorityToString = {
+    1: "high", // high
+    2: "medium", // medium
+    3: "low", // low
+  };
   const priorityStyle = {
     high: "border-red-300 bg-red-50 text-red-500",
     medium: "border-orange-300 bg-orange-50 text-orange-500",
@@ -35,9 +40,9 @@ function ToDo({ priority, category, contents, isCompleted, handleToggle }) {
         </span>
         <div className="flex items-center gap-1 font-semibold text-xs scale-90 origin-left">
           <span
-            className={`px-2 py-1 mr-2 rounded-lg border ${priorityStyle[priority]}`}
+            className={`px-2 py-1 mr-2 rounded-lg border ${priorityStyle[priorityToString[priority]]}`}
           >
-            {priority}
+            {priorityToString[priority]}
           </span>
           <Tag
             size={16}

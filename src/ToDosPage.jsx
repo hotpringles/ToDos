@@ -60,41 +60,45 @@ function DonutChart({ percent, color = "text-blue-400" }) {
   );
 }
 
+const HIGH = 1;
+const MEDIUM = 2;
+const LOW = 3;
+
 function ToDosPage() {
   const [selectedDate, setSelectedDate] = useState(startOfToday());
-  const [priority, setPriority] = useState("high");
+  const [priority, setPriority] = useState(HIGH);
   const [todos, setTodos] = useState([
     {
       id: 1,
-      priority: "high",
+      priority: HIGH,
       category: "Inbox",
       contents: "안녕",
       isCompleted: false,
     },
     {
       id: 2,
-      priority: "medium",
+      priority: MEDIUM,
       category: "Inbox",
       contents: "가을",
       isCompleted: false,
     },
     {
       id: 3,
-      priority: "medium",
+      priority: LOW,
       category: "Inbox",
       contents: "여름",
       isCompleted: false,
     },
     {
       id: 4,
-      priority: "high",
+      priority: HIGH,
       category: "Inbox",
       contents: "계절",
       isCompleted: false,
     },
     {
       id: 5,
-      priority: "low",
+      priority: LOW,
       category: "Inbox",
       contents: "눈물",
       isCompleted: false,
@@ -130,13 +134,13 @@ function ToDosPage() {
       total: 0,
     });
     todos.forEach((todo) => {
-      if (todo.priority === "high") {
+      if (todo.priority === HIGH) {
         setHighCount((prev) =>
           todo.isCompleted
             ? { each: prev.each + 1, total: prev.total + 1 }
             : { ...prev, total: prev.total + 1 },
         );
-      } else if (todo.priority === "medium") {
+      } else if (todo.priority === MEDIUM) {
         setMediumCount((prev) =>
           todo.isCompleted
             ? { each: prev.each + 1, total: prev.total + 1 }
@@ -159,7 +163,9 @@ function ToDosPage() {
       ),
     );
   };
-  const sortedTodos = [...todos].sort((a, b) => a.isCompleted - b.isCompleted);
+  const sortedTodos = [...todos].sort((a, b) => {
+    return a.isCompleted - b.isCompleted || a.priority - b.priority;
+  });
 
   const [isAtBottom, setIsAtBottom] = useState(false);
   const scrollRef = useRef(null);
