@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Check, Tag, Ellipsis } from "lucide-react";
 import ToDoSettings from "./ToDoSettings";
 
-function ToDo({ priority, category, contents, isCompleted, handleToggle }) {
+function ToDo({ todo, handleToggle, handleModify, handleDelete }) {
   const priorityToString = {
     1: "high", // high
     2: "medium", // medium
@@ -36,10 +36,10 @@ function ToDo({ priority, category, contents, isCompleted, handleToggle }) {
     <div className="flex items-center gap-4 h-[90px] p-4 border-b border-gray-200">
       <button
         onClick={handleToggle}
-        className={`w-6 h-6 border border-gray-200 rounded-md flex justify-center items-center ${isCompleted ? "bg-gray-100" : ""}`}
+        className={`w-6 h-6 border border-gray-200 rounded-md flex justify-center items-center ${todo.isCompleted ? "bg-gray-100" : ""}`}
       >
         {/* <AnimatePresence> */}
-        {isCompleted && (
+        {todo.isCompleted && (
           <motion.div
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -53,15 +53,15 @@ function ToDo({ priority, category, contents, isCompleted, handleToggle }) {
       </button>
       <div className="grow flex flex-col">
         <span
-          className={`text-2xl font-semibold ${isCompleted ? "line-through text-gray-400" : ""}`}
+          className={`text-2xl font-semibold ${todo.isCompleted ? "line-through text-gray-400" : ""}`}
         >
-          {contents}
+          {todo.contents}
         </span>
         <div className="flex items-center gap-1 font-semibold text-xs scale-90 origin-left">
           <span
-            className={`px-2 py-1 mr-2 rounded-lg border ${priorityStyle[priorityToString[priority]]}`}
+            className={`px-2 py-1 mr-2 rounded-lg border ${priorityStyle[priorityToString[todo.priority]]}`}
           >
-            {priorityToString[priority]}
+            {priorityToString[todo.priority]}
           </span>
           <Tag
             size={16}
@@ -70,10 +70,14 @@ function ToDo({ priority, category, contents, isCompleted, handleToggle }) {
             fill="currentColor"
             className="text-gray-500"
           />
-          <span className="text-gray-500">{category}</span>
+          <span className="text-gray-500">{todo.category}</span>
         </div>
       </div>
-      <ToDoSettings />
+      <ToDoSettings
+        todo={todo}
+        handleModify={handleModify}
+        handleDelete={handleDelete}
+      />
     </div>
   );
 }

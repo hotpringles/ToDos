@@ -3,7 +3,7 @@ import { useState, useRef } from "react";
 import { Settings2, Edit3, Trash2 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
-function ToDoSettings() {
+function ToDoSettings({ todo, handleModify, handleDelete }) {
   const [isOpen, setIsOpen] = useState(false);
   const buttonRef = useRef(null);
 
@@ -25,7 +25,7 @@ function ToDoSettings() {
       <button
         ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
-        className={`p-2 rounded-lg transition-colors ${
+        className={`p-2 rounded-lg transition-colors cursor-pointer ${
           isOpen ? "bg-sky-100 text-sky-600" : "text-gray-400 hover:bg-gray-100"
         }`}
       >
@@ -55,10 +55,16 @@ function ToDoSettings() {
               className="w-36 p-1.5 bg-white border border-gray-100 rounded-xl shadow-2xl overflow-hidden"
             >
               <div className="flex flex-col text-sm font-medium text-gray-600">
-                <button className="flex items-center gap-2 p-2 rounded-lg hover:bg-sky-50 hover:text-sky-600 transition-colors">
+                <button
+                  onClick={() => handleModify(todo)}
+                  className="flex items-center gap-2 p-2 rounded-lg hover:bg-sky-50 hover:text-sky-600 transition-colors"
+                >
                   <Edit3 size={14} /> 수정하기
                 </button>
-                <button className="flex items-center gap-2 p-2 rounded-lg hover:bg-rose-50 hover:text-rose-600 transition-colors border-t border-gray-50">
+                <button
+                  onClick={() => handleDelete(todo.id)}
+                  className="flex items-center gap-2 p-2 rounded-lg hover:bg-rose-50 hover:text-rose-600 transition-colors border-t border-gray-50"
+                >
                   <Trash2 size={14} /> 삭제하기
                 </button>
               </div>

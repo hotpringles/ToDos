@@ -2,63 +2,11 @@ import WeeklyCalendar from "./WeeklyCalendar";
 import AddBox from "./AddBox";
 import { format, startOfToday } from "date-fns";
 import { useState, useRef, useEffect, useMemo } from "react";
+import { v4 as uuidv4 } from "uuid";
 import CategorySelect from "./CategorySelect";
 import PrioritySelect from "./PriorityCheck";
 import ToDo from "./ToDo";
-
-function DonutChart({ percent, color = "text-blue-400" }) {
-  // [수학 공식 파트]
-  const radius = 40; // 1. 반지름 설정 (크기 결정)
-  const circumference = 2 * Math.PI * radius; // 2. 원의 둘레 공식 (2πr)
-
-  // 3. 보여줄 길이 계산
-  // 전체 둘레에서 (퍼센트만큼의 길이)를 뺀 나머지 공간을 계산합니다.
-  // 이 '남은 공간'만큼 그래프를 뒤로 밀어버리는 원리입니다.
-  const offset = circumference - (percent / 100) * circumference;
-
-  return (
-    <div className="relative w-[56px] h-[56px] flex items-center justify-center">
-      {/* viewBox="0 0 100 100": 
-         가로 100, 세로 100이라는 가상의 모눈종이를 만듭니다.
-         transform -rotate-90:
-         SVG 원은 원래 3시 방향(오른쪽)부터 그려집니다. 
-         이걸 12시 방향(위쪽)부터 시작하게 하려고 90도 반시계로 돌립니다.
-      */}
-      <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-        {/* [배경 원]: 회색 트랙 (항상 100% 그려져 있음) */}
-        <circle
-          cx="50"
-          cy="50" // 중심점 (50, 50)
-          r={radius} // 반지름 (40)
-          fill="transparent" // 안쪽 색 채우기 없음 (도넛 모양)
-          stroke="#e5e7eb" // 테두리 색 (Tailwind gray-200)
-          strokeWidth="10" // 테두리 두께
-        />
-
-        {/* [진행 원]: 파란색 그래프 (퍼센트만큼만 그려짐) */}
-        <circle
-          cx="50"
-          cy="50"
-          r={radius}
-          fill="transparent"
-          className={color} // Tailwind 색상 적용 (예: text-blue-500)
-          stroke="currentColor" // 현재 텍스트 색상(className)을 따라감
-          strokeWidth="10"
-          /* 여기가 핵심 마법! */
-          strokeDasharray={circumference} // 점선 하나 길이를 원 전체 둘레로 잡음
-          strokeDashoffset={offset} // 계산된 만큼 뒤로 당겨서 숨김
-          strokeLinecap="round" // 선의 끝부분을 둥글게 처리
-          style={{ transition: "stroke-dashoffset 0.5s ease-in-out" }} // 애니메이션
-        />
-      </svg>
-
-      {/* 중앙 텍스트 (absolute로 띄워서 가운데 배치) */}
-      <span className="absolute translate-y-[1px] text-sm font-bold text-gray-700 ">
-        {Math.round(percent) || 0}%
-      </span>
-    </div>
-  );
-}
+import DonutChart from "./DonutChart";
 
 const HIGH = 1;
 const MEDIUM = 2;
@@ -67,6 +15,7 @@ const LOW = 3;
 function ToDosPage() {
   const [selectedDate, setSelectedDate] = useState(startOfToday());
   const [priority, setPriority] = useState(HIGH);
+  const [text, setText] = useState("");
   const [todos, setTodos] = useState([
     {
       id: 1,
@@ -111,6 +60,8 @@ function ToDosPage() {
     "운동",
   ]);
   const [selectedCategory, setSelectedCategory] = useState(categories[0]);
+
+  const [edittingTodo, setEdittingTodo] = useState(null);
 
   // 최적화 고민 필요 (ex. useMemo로 관리하면 더 낫지 않을까?)
   const [totalCount, setTotalCount] = useState(0);
@@ -187,21 +138,49 @@ function ToDosPage() {
     }
   };
 
+  const handleModifyTodo = (todo) => {
+    setEdittingTodo(todo);
+    console.log(todo);
+    setPriority(todo.priority);
+    setText(todo.contents);
+    setSelectedCategory(todo.category);
+    setTodos(todos.filter((item) => item.id !== todo.id));
+  };
+
+  const handleDeleteTodo = (id) => {
+    setTodos(todos.filter((todo) => todo.id !== id));
+  };
+
   useEffect(() => {
     handleScroll();
   }, [todos]);
 
-  const handleAddTodo = (text) => {
-    setTodos((prev) => [
-      ...prev,
-      {
-        id: prev.length + 1,
-        priority: priority,
-        category: selectedCategory,
-        contents: text,
-        isCompleted: false,
-      },
-    ]);
+  const handleAddTodo = () => {
+    if (!edittingTodo) {
+      setTodos((prev) => [
+        ...prev,
+        {
+          id: uuidv4(),
+          priority: priority,
+          category: selectedCategory,
+          contents: text,
+          isCompleted: false,
+        },
+      ]);
+    } else {
+      setTodos((prev) => [
+        ...prev,
+        {
+          id: edittingTodo.id,
+          priority: priority,
+          category: selectedCategory,
+          contents: text,
+          isCompleted: edittingTodo.isCompleted,
+        },
+      ]);
+    }
+
+    setEdittingTodo(null);
   };
 
   return (
@@ -218,9 +197,8 @@ function ToDosPage() {
       </div>
       <div className="grow flex min-h-0">
         <div className="grow mr-3 bg-white border border-gray-200 rounded-2xl flex flex-col">
-          <div className="p-4 border-gray-200 border-b flex justify-between items-center">
+          <div className="p-4 border-gray-200 border-b flex items-center">
             <span className="font-bold text-md">Daily task</span>
-            <span className="text-sm">View All</span>
           </div>
           {/* <div
             className="grow overflow-y-auto
@@ -265,8 +243,10 @@ function ToDosPage() {
             {sortedTodos.map((todo) => (
               <ToDo
                 key={todo.id}
-                {...todo}
+                todo={todo}
                 handleToggle={() => handleToggle(todo.id)}
+                handleModify={handleModifyTodo}
+                handleDelete={handleDeleteTodo}
               />
             ))}
             <div className="h-2" />
@@ -283,41 +263,58 @@ function ToDosPage() {
                 setSelected={setSelectedCategory}
               />
             </div>
-            <AddBox handleAddTodo={handleAddTodo} />
+            <AddBox
+              text={text}
+              setText={setText}
+              handleAddTodo={handleAddTodo}
+            />
           </div>
         </div>
         <div className="w-[350px] p-4 flex flex-col gap-2 bg-white border border-gray-200 rounded-2xl">
+          <div
+            className={`flex gap-2 rounded-xl border border-gray-200 p-1 justify-around items-center ${totalCount === 0 ? "text-gray-500" : "text-black border-gray-400"}`}
+          >
+            <DonutChart percent={(totalCount / todos.length) * 100} />
+            <div className="flex flex-col text-right">
+              <span className="text-lg font-bold transition-all duration-300 ease-in-out">
+                Ahcheivement Rate
+              </span>
+              <span className="text-md font-semibold transition-all duration-300 ease-in-out">
+                {totalCount} / {todos.length}
+              </span>
+            </div>
+          </div>
           <div className="flex justify-between">
-            <div className="flex items-center h-fit border border-rose-500 bg-rose-50 p-2 rounded-xl gap-2 text-sm">
-              <span
-                className={` font-bold transition-all duration-300 ease-in-out
-               ${highCount.each === 0 ? "text-rose-300" : "text-rose-500"}`}
-              >
+            <div
+              className={`flex items-center h-fit border p-2 rounded-xl gap-2 text-sm ${highCount.each === 0 ? "text-rose-300" : "text-rose-500 bg-rose-50"}`}
+            >
+              <span className="font-bold transition-all duration-300 ease-in-out">
                 High
               </span>
               <span
-                className={`font-semibold transition-all duration-300 ease-in-out
-               ${highCount.each === 0 ? "text-rose-300" : "text-rose-500"}`}
+                className={
+                  "font-semibold transition-all duration-300 ease-in-out"
+                }
               >
                 {highCount.each} / {highCount.total}
               </span>
             </div>
-            <div className="flex items-center h-fit border border-amber-500 bg-amber-50 p-2 rounded-xl gap-2 text-sm">
-              <span
-                className={`font-bold transition-all duration-300 ease-in-out
-               ${mediumCount.each === 0 ? "text-amber-300" : "text-amber-500"}`}
-              >
+            <div
+              className={`flex items-center h-fit border p-2 rounded-xl gap-2 text-sm ${mediumCount.each === 0 ? "text-amber-300" : "text-amber-500 bg-amber-50"}`}
+            >
+              <span className="font-bold transition-all duration-300 ease-in-out">
                 Medium
               </span>
               <span
-                className={`font-semibold transition-all duration-300 ease-in-out
-               ${mediumCount.each === 0 ? "text-amber-300" : "text-amber-500"}`}
+                className={
+                  "font-semibold transition-all duration-300 ease-in-out"
+                }
               >
                 {mediumCount.each} / {mediumCount.total}
               </span>
             </div>
             <div
-              className={`flex items-center h-fit border border-greeb-500 p-2 rounded-xl gap-2 text-sm ${lowCount.each === 0 ? "text-sky-200" : "text-sky-400"}`}
+              className={`flex items-center h-fit border p-2 rounded-xl gap-2 text-sm ${lowCount.each === 0 ? "text-sky-200" : "text-sky-400 bg-sky-50"}`}
             >
               <span className="font-bold transition-all duration-300 ease-in-out">
                 Low
@@ -328,23 +325,6 @@ function ToDosPage() {
                 }
               >
                 {lowCount.each} / {lowCount.total}
-              </span>
-            </div>
-          </div>
-          <div className="flex gap-2 rounded-xl border border-gray-200 p-1 justify-around items-center">
-            <DonutChart percent={(totalCount / todos.length) * 100} />
-            <div className="flex flex-col text-right ">
-              <span
-                className={`text-lg font-bold transition-all duration-300 ease-in-out
-               ${totalCount === 0 ? "text-gray-500" : "text-black"}`}
-              >
-                Ahcheivement Rate
-              </span>
-              <span
-                className={`text-md font-semibold transition-all duration-300 ease-in-out
-               ${totalCount === 0 ? "text-gray-500" : "text-black"}`}
-              >
-                {totalCount} / {todos.length}
               </span>
             </div>
           </div>

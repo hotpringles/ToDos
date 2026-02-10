@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { ArrowUp } from "lucide-react";
 
-function AddBox({ handleAddTodo }) {
-  const [text, setText] = useState("");
+function AddBox({ text, setText, handleAddTodo }) {
   const handleSubmit = (e) => {
     e.preventDefault();
-    handleAddTodo(text);
+    handleAddTodo();
     setText("");
   };
   return (
