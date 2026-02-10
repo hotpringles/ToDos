@@ -41,3 +41,15 @@
 ::-webkit-scrollbar-thumb:hover {
   background-color: var(--color-gray-300);
 }
+
+/* v4에서는 여기에 커스텀 유틸리티를 추가합니다 */
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+}

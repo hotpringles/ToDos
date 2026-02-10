@@ -1,11 +1,14 @@
 import { createPortal } from "react-dom";
 import { useState, useRef } from "react";
-import { Settings2, Edit3, Trash2 } from "lucide-react";
+import { Settings2, Edit3, Trash2, Timer } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
+import TimeModal from "./TiimeModal";
 
 function ToDoSettings({ todo, handleModify, handleDelete }) {
   const [isOpen, setIsOpen] = useState(false);
   const buttonRef = useRef(null);
+
+  const [isTimeModalOpen, setIsTimeModalOpen] = useState(false);
 
   // 1. 메뉴가 나타날 위치를 계산하는 함수
   const getPosition = () => {
@@ -17,6 +20,12 @@ function ToDoSettings({ todo, handleModify, handleDelete }) {
       top: rect.bottom + window.scrollY + 8,
       left: rect.left + window.scrollX, // 메뉴 너비에 맞춰 왼쪽으로 살짝 이동
     };
+  };
+
+  // 모달에서 저장 버튼을 눌렀을 때 실행될 함수
+  const onSaveTime = (newTime) => {
+    handleTimeUpdate(todo.id, newTime); // ID와 새로운 시간을 부모에게 전달
+    setIsTimeModalOpen(false); // 모달 닫기
   };
 
   return (
@@ -62,6 +71,15 @@ function ToDoSettings({ todo, handleModify, handleDelete }) {
                   <Edit3 size={14} /> 수정하기
                 </button>
                 <button
+                  onClick={() => {
+                    setIsOpen(false); // 드롭다운 메뉴 닫기
+                    setIsTimeModalOpen(true); // 시간 모달 열기
+                  }}
+                  className="flex items-center gap-2 p-2 rounded-lg hover:bg-sky-50 hover:text-sky-600 transition-colors border-t border-gray-50"
+                >
+                  <Timer size={14} /> 시간 설정하기
+                </button>
+                <button
                   onClick={() => handleDelete(todo.id)}
                   className="flex items-center gap-2 p-2 rounded-lg hover:bg-rose-50 hover:text-rose-600 transition-colors border-t border-gray-50"
                 >
@@ -72,6 +90,21 @@ function ToDoSettings({ todo, handleModify, handleDelete }) {
           </Portal>
         )}
       </AnimatePresence>
+      {/* 5. TimeModal 렌더링 (Portal 밖, 컴포넌트 최상단에 배치) */}
+      {/* ✨ [핵심 수정] TimeModal도 Portal로 감싸줍니다! ✨ */}
+      {isTimeModalOpen && (
+        <Portal>
+          <TimeModal
+            isOpen={isTimeModalOpen}
+            onClose={() => setIsTimeModalOpen(false)}
+            onSave={(newTime) => {
+              handleTimeUpdate(todo.id, newTime);
+              setIsTimeModalOpen(false);
+            }}
+            initialTime={todo.deadline}
+          />
+        </Portal>
+      )}
     </>
   );
 }
