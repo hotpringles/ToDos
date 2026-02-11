@@ -4,7 +4,7 @@ import { Settings2, Edit3, Trash2, Timer } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import TimeModal from "./TiimeModal";
 
-function ToDoSettings({ todo, handleModify, handleDelete }) {
+function ToDoSettings({ todo, handleModify, handleDelete, handleTimeUpdate }) {
   const [isOpen, setIsOpen] = useState(false);
   const buttonRef = useRef(null);
 
@@ -20,12 +20,6 @@ function ToDoSettings({ todo, handleModify, handleDelete }) {
       top: rect.bottom + window.scrollY + 8,
       left: rect.left + window.scrollX, // 메뉴 너비에 맞춰 왼쪽으로 살짝 이동
     };
-  };
-
-  // 모달에서 저장 버튼을 눌렀을 때 실행될 함수
-  const onSaveTime = (newTime) => {
-    handleTimeUpdate(todo.id, newTime); // ID와 새로운 시간을 부모에게 전달
-    setIsTimeModalOpen(false); // 모달 닫기
   };
 
   return (
@@ -97,11 +91,11 @@ function ToDoSettings({ todo, handleModify, handleDelete }) {
           <TimeModal
             isOpen={isTimeModalOpen}
             onClose={() => setIsTimeModalOpen(false)}
-            onSave={(newTime) => {
-              handleTimeUpdate(todo.id, newTime);
+            onSave={(newTime, duration) => {
+              handleTimeUpdate(todo.id, newTime, duration);
               setIsTimeModalOpen(false);
             }}
-            initialTime={todo.deadline}
+            todo={todo}
           />
         </Portal>
       )}

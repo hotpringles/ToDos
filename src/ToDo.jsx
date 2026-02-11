@@ -1,9 +1,16 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, Tag, Ellipsis } from "lucide-react";
+import { Check, Tag, Clock } from "lucide-react";
+import { format, parse, addMinutes } from "date-fns";
 import ToDoSettings from "./ToDoSettings";
 
-function ToDo({ todo, handleToggle, handleModify, handleDelete }) {
+function ToDo({
+  todo,
+  handleToggle,
+  handleModify,
+  handleDelete,
+  handleTimeUpdate,
+}) {
   const priorityToString = {
     1: "high", // high
     2: "medium", // medium
@@ -20,6 +27,12 @@ function ToDo({ todo, handleToggle, handleModify, handleDelete }) {
 
   const handleMenuToggle = () => {
     setIsOpen((prev) => !prev);
+  };
+
+  const calculatedEndTime = (startTime) => {
+    const startDate = parse(startTime, "HH:mm", new Date());
+    const endTime = addMinutes(startDate, parseInt(todo.duration));
+    return format(endTime, "HH:mm");
   };
 
   const menuVariants = {
@@ -52,11 +65,13 @@ function ToDo({ todo, handleToggle, handleModify, handleDelete }) {
         {/* </AnimatePresence> */}
       </button>
       <div className="grow flex flex-col">
-        <span
-          className={`text-2xl font-semibold ${todo.isCompleted ? "line-through text-gray-400" : ""}`}
-        >
-          {todo.contents}
-        </span>
+        <div className="flex items-baseline gap-1">
+          <span
+            className={`mr-1 text-2xl font-semibold ${todo.isCompleted ? "line-through text-gray-400" : ""}`}
+          >
+            {todo.contents}
+          </span>
+        </div>
         <div className="flex items-center gap-1 font-semibold text-xs scale-90 origin-left">
           <span
             className={`px-2 py-1 mr-2 rounded-lg border ${priorityStyle[priorityToString[todo.priority]]}`}
@@ -73,10 +88,19 @@ function ToDo({ todo, handleToggle, handleModify, handleDelete }) {
           <span className="text-gray-500">{todo.category}</span>
         </div>
       </div>
+      {todo.time && todo.duration && (
+        <div className="flex items-center gap-1 font-bold text-xs text-gray-500">
+          <Clock size={12} />
+          <span className="translate-y-[1px]">
+            {todo.time} ~ {calculatedEndTime(todo.time)}
+          </span>
+        </div>
+      )}
       <ToDoSettings
         todo={todo}
         handleModify={handleModify}
         handleDelete={handleDelete}
+        handleTimeUpdate={handleTimeUpdate}
       />
     </div>
   );

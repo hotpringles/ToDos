@@ -1,7 +1,8 @@
 import { X, Clock, Check, Hourglass } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
+import { format, roundToNearestMinutes } from "date-fns";
 
-function TimeModal({ isOpen, onClose, onSave, initialTime, initialDuration }) {
+function TimeModal({ isOpen, onClose, onSave, todo }) {
   const [selectedHour, setSelectedHour] = useState("12");
   const [selectedMinute, setSelectedMinute] = useState("00");
   const [selectedDuration, setSelectedDuration] = useState("30"); // 기본 30분
@@ -11,7 +12,7 @@ function TimeModal({ isOpen, onClose, onSave, initialTime, initialDuration }) {
   const durationRef = useRef(null);
 
   // 📐 [정밀 치수 설정]
-  const CONTAINER_HEIGHT = 240;
+  const CONTAINER_HEIGHT = 241;
   const BUTTON_HEIGHT = 50;
   const BUTTON_MARGIN = 0;
 
@@ -23,8 +24,8 @@ function TimeModal({ isOpen, onClose, onSave, initialTime, initialDuration }) {
   // 🧮 [패딩 계산]
   const ORIGINAL_CENTER = (CONTAINER_HEIGHT - BUTTON_HEIGHT) / 2;
   const HALF_ITEM_OFFSET = ITEM_SIZE / 2;
-  const PADDING_TOP = ORIGINAL_CENTER - HALF_ITEM_OFFSET;
-  const PADDING_BOTTOM = ORIGINAL_CENTER;
+  const PADDING_TOP = ORIGINAL_CENTER - HALF_ITEM_OFFSET + 1;
+  const PADDING_BOTTOM = ORIGINAL_CENTER + 1;
 
   // 데이터 생성
   const hours = Array.from({ length: 24 }, (_, i) =>
@@ -41,19 +42,19 @@ function TimeModal({ isOpen, onClose, onSave, initialTime, initialDuration }) {
       // 1. 시간 초기화
       let h = "12",
         m = "00";
-      if (initialTime) {
-        [h, m] = initialTime.split(":");
+      if (todo.time) {
+        [h, m] = todo.time.split(":");
       } else {
         const now = new Date();
-        h = String(now.getHours()).padStart(2, "0");
-        const min = Math.round(now.getMinutes() / 5) * 5;
-        m = String(min < 60 ? min : 55).padStart(2, "0");
+        const roundedDate = roundToNearestMinutes(now, { nearestTo: 5 });
+        h = format(roundedDate, "HH");
+        m = format(roundedDate, "mm");
       }
       setSelectedHour(h);
       setSelectedMinute(m);
 
       // 2. 소요 시간 초기화 (값이 없으면 기본 30분)
-      const dur = initialDuration ? String(initialDuration) : "30";
+      const dur = todo.duration ? todo.duration : "30";
       setSelectedDuration(dur);
 
       // 3. 자동 스크롤
@@ -66,7 +67,7 @@ function TimeModal({ isOpen, onClose, onSave, initialTime, initialDuration }) {
         scrollToCenter(durationRef, durIndex >= 0 ? durIndex : 5, "auto");
       }, 10);
     }
-  }, [isOpen, initialTime, initialDuration]);
+  }, [isOpen, todo?.time, todo?.duration]);
 
   const scrollToCenter = (ref, index, behavior = "smooth") => {
     if (ref.current) {
@@ -233,7 +234,7 @@ function TimeModal({ isOpen, onClose, onSave, initialTime, initialDuration }) {
             완료
           </button>
 
-          {(initialTime || initialDuration) && (
+          {(todo.time || todo.duration) && (
             <button
               onClick={() => onSave("", "")}
               className="w-full py-3 text-red-500 font-bold text-sm hover:bg-red-50 rounded-2xl transition-colors"

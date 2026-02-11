@@ -4,9 +4,11 @@ import { format, startOfToday } from "date-fns";
 import { useState, useRef, useEffect, useMemo } from "react";
 import { v4 as uuidv4 } from "uuid";
 import CategorySelect from "./CategorySelect";
+import RoadMapSelect from "./RoadMapSelect";
 import PrioritySelect from "./PriorityCheck";
 import ToDo from "./ToDo";
 import DonutChart from "./DonutChart";
+import Calendar from "./Calendar";
 
 const HIGH = 1;
 const MEDIUM = 2;
@@ -53,6 +55,7 @@ function ToDosPage() {
       isCompleted: false,
     },
   ]);
+
   const [categories, setCategories] = useState([
     "학업",
     "과제",
@@ -60,6 +63,9 @@ function ToDosPage() {
     "운동",
   ]);
   const [selectedCategory, setSelectedCategory] = useState(categories[0]);
+
+  const [roadmaps, setRoadMaps] = useState(["코딩테스트 준비", "토익 준비"]);
+  const [selectedRoadMap, setSelectedRoadMap] = useState("");
 
   const [edittingTodo, setEdittingTodo] = useState(null);
 
@@ -151,6 +157,14 @@ function ToDosPage() {
     setTodos(todos.filter((todo) => todo.id !== id));
   };
 
+  const handleTimeUpdate = (id, newTime, duration) => {
+    setTodos((prev) =>
+      prev.map((todo) =>
+        todo.id == id ? { ...todo, time: newTime, duration: duration } : todo,
+      ),
+    );
+  };
+
   useEffect(() => {
     handleScroll();
   }, [todos]);
@@ -165,6 +179,9 @@ function ToDosPage() {
           category: selectedCategory,
           contents: text,
           isCompleted: false,
+          date: selectedDate,
+          time: null,
+          duration: null,
         },
       ]);
     } else {
@@ -176,6 +193,9 @@ function ToDosPage() {
           category: selectedCategory,
           contents: text,
           isCompleted: edittingTodo.isCompleted,
+          date: edittingTodo.date,
+          time: edittingTodo.time,
+          duration: edittingTodo.duration,
         },
       ]);
     }
@@ -247,6 +267,7 @@ function ToDosPage() {
                 handleToggle={() => handleToggle(todo.id)}
                 handleModify={handleModifyTodo}
                 handleDelete={handleDeleteTodo}
+                handleTimeUpdate={handleTimeUpdate}
               />
             ))}
             <div className="h-2" />
@@ -262,6 +283,13 @@ function ToDosPage() {
                 selected={selectedCategory}
                 setSelected={setSelectedCategory}
               />
+              <div className="w-[1px] h-4 bg-gray-300 mx-1" />
+              <RoadMapSelect
+                roadmaps={roadmaps}
+                setRoadMaps={setRoadMaps}
+                selected={selectedRoadMap}
+                setSelected={setSelectedRoadMap}
+              />
             </div>
             <AddBox
               text={text}
@@ -271,6 +299,7 @@ function ToDosPage() {
           </div>
         </div>
         <div className="w-[350px] p-4 flex flex-col gap-2 bg-white border border-gray-200 rounded-2xl">
+          <Calendar todos={todos} selectedDate={selectedDate} />
           <div
             className={`flex gap-2 rounded-xl border border-gray-200 p-1 justify-around items-center ${totalCount === 0 ? "text-gray-500" : "text-black border-gray-400"}`}
           >
