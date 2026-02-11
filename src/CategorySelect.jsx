@@ -43,6 +43,7 @@ const CategorySelect = ({
     if (selected === targetCat) setSelected(updated[0]);
   };
 
+  // 드래그 & 드롭 수정 필요
   return (
     <div className="relative" ref={dropdownRef}>
       <div className="flex items-center gap-3">

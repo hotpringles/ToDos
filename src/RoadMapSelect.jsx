@@ -101,6 +101,7 @@ const RoadMapItem = memo(
     // 2. showCheckMark: 선택된 항목이고 + 드래그 상황이 아닐 때 (여기가 추가됨!)
     const showCheckMark = selected === rm && !isDragging && !isAnyDragging;
 
+    // 드래그 & 드롭 수정 필요
     return (
       <Reorder.Item
         value={rm}
