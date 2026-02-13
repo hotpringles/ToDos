@@ -9,6 +9,7 @@ import PrioritySelect from "./PriorityCheck";
 import ToDo from "./ToDo";
 import DonutChart from "./DonutChart";
 import Calendar from "./Calendar";
+import RoadMapShow from "./RoadMapShow";
 
 const HIGH = 1;
 const MEDIUM = 2;
@@ -64,7 +65,19 @@ function ToDosPage() {
   ]);
   const [selectedCategory, setSelectedCategory] = useState(categories[0]);
 
-  const [roadmaps, setRoadMaps] = useState(["코딩테스트 준비", "토익 준비"]);
+  const [roadmaps, setRoadMaps] = useState([
+    {
+      goal: "코딩테스트 준비",
+      completions: ["JS 1장", "JS 2장", "JS 3장"],
+      completionCount: 3,
+    },
+    {
+      goal: "토익 준비",
+      completions: ["준동사", "분사구문", "단어", "Part7 문제풀기"],
+      completionCount: 4,
+    },
+  ]);
+  const goals = roadmaps.map((rm) => rm.goal);
   const [selectedRoadMap, setSelectedRoadMap] = useState("");
 
   const [edittingTodo, setEdittingTodo] = useState(null);
@@ -285,7 +298,7 @@ function ToDosPage() {
               />
               <div className="w-[1px] h-4 bg-gray-300 mx-1" />
               <RoadMapSelect
-                roadmaps={roadmaps}
+                roadmaps={goals}
                 setRoadMaps={setRoadMaps}
                 selected={selectedRoadMap}
                 setSelected={setSelectedRoadMap}
@@ -299,7 +312,8 @@ function ToDosPage() {
           </div>
         </div>
         <div className="w-[350px] p-4 flex flex-col gap-2 bg-white border border-gray-200 rounded-2xl">
-          <Calendar todos={todos} selectedDate={selectedDate} />
+          {/* <Calendar todos={todos} selectedDate={selectedDate} /> */}
+          <RoadMapShow roadmaps={roadmaps} />
           <div
             className={`flex gap-2 rounded-xl border border-gray-200 p-1 justify-around items-center ${totalCount === 0 ? "text-gray-500" : "text-black border-gray-400"}`}
           >
