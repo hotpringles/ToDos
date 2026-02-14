@@ -1,4 +1,4 @@
-import { X, Clock, Check, Hourglass } from "lucide-react";
+import { X, Clock, Check } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { format, roundToNearestMinutes } from "date-fns";
 

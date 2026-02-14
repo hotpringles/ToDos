@@ -11,7 +11,7 @@ const MENU_ITEMS = [
 
 function SideBar() {
   return (
-    <aside className="border-r border-gray-200 h-screen flex flex-col">
+    <aside className="sticky left-0 top-0 border-r border-gray-200 h-screen flex flex-col">
       <ul className="p-4 grow flex flex-col gap-2">
         {MENU_ITEMS.map((item) => (
           <li key={item.path}>
