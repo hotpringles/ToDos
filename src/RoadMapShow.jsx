@@ -2,12 +2,17 @@ import CompletionCount from "./CompletionCount";
 
 function RoadMapShow({ roadmaps }) {
   return (
-    <div className="mb-5 border-2 border-gray-300 p-2 rounded-xl">
+    <div className="border border-gray-200 p-4 rounded-xl shadow-md bg-white">
       <span className="inline-block text-lg font-bold mb-2">RoadMaps</span>
-      <div>
+      <div className="flex flex-col gap-2">
         {roadmaps.map((rm, index) => (
-          <div key={index} className="flex font-semibold justify-between">
-            <span>{rm.goal}</span>
+          <div
+            key={index}
+            className="flex flex-col font-semibold justify-between"
+          >
+            <span>
+              {rm.goal} ({rm.completionCount})
+            </span>
             <CompletionCount completionCount={rm.completionCount} />
           </div>
         ))}

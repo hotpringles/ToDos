@@ -9,7 +9,7 @@ function DonutChart({ percent, color = "text-blue-400" }) {
   const offset = circumference - (percent / 100) * circumference;
 
   return (
-    <div className="relative w-[75px] h-[75px] flex items-center justify-center">
+    <div className="relative w-[90px] h-[90px] flex items-center justify-center">
       {/* viewBox="0 0 100 100": 
          가로 100, 세로 100이라는 가상의 모눈종이를 만듭니다.
          transform -rotate-90:

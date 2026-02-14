@@ -229,7 +229,7 @@ function ToDosPage() {
         />
       </div>
       <div className="grow flex min-h-0">
-        <div className="grow mr-3 bg-white border border-gray-200 rounded-2xl flex flex-col">
+        <div className="grow mr-3 bg-white border border-gray-200 rounded-2xl shadow-md flex flex-col">
           <div className="p-4 border-gray-200 border-b flex items-center">
             <span className="font-bold text-md">Daily task</span>
           </div>
@@ -311,64 +311,67 @@ function ToDosPage() {
             />
           </div>
         </div>
-        <div className="w-[350px] p-4 flex flex-col gap-2 bg-white border border-gray-200 rounded-2xl">
+        <div className="w-[300px] flex flex-col gap-3">
           {/* <Calendar todos={todos} selectedDate={selectedDate} /> */}
           <RoadMapShow roadmaps={roadmaps} />
           <div
-            className={`flex gap-2 rounded-xl border border-gray-200 p-1 justify-around items-center ${totalCount === 0 ? "text-gray-500" : "text-black border-gray-400"}`}
+            className={`h-fit flex flex-col gap-2 rounded-xl border border-gray-200 shadow-md p-4 bg-white ${totalCount === 0 ? "text-gray-400" : "text-black"}`}
           >
-            <DonutChart percent={(totalCount / todos.length) * 100} />
-            <div className="flex flex-col text-right">
-              <span className="text-lg font-bold transition-all duration-300 ease-in-out">
-                Ahcheivement Rate
-              </span>
-              <span className="text-md font-semibold transition-all duration-300 ease-in-out">
-                {totalCount} / {todos.length}
-              </span>
+            <div className="flex items-center justify-between">
+              <DonutChart percent={(totalCount / todos.length) * 100} />
+              <div className="flex flex-col text-right">
+                <span className="text-sm font-semibold transition-all duration-300 ease-in-out">
+                  Ahcheivement Rate
+                </span>
+                <span className="text-md font-semibold transition-all duration-300 ease-in-out">
+                  <span className="text-3xl">{totalCount}</span> /{" "}
+                  {todos.length}
+                </span>
+              </div>
             </div>
-          </div>
-          <div className="flex justify-between">
-            <div
-              className={`flex items-center h-fit border p-2 rounded-xl gap-2 text-sm ${highCount.each === 0 ? "text-rose-300" : "text-rose-500 bg-rose-50"}`}
-            >
-              <span className="font-bold transition-all duration-300 ease-in-out">
-                High
-              </span>
-              <span
-                className={
-                  "font-semibold transition-all duration-300 ease-in-out"
-                }
+            <div className="grid grid-cols-3 gap-3">
+              <div
+                className={`grow flex flex-col justify-between items-center h-fit p-3 rounded-xl gap-2 ${highCount.each === 0 ? "text-rose-300" : "ring-2 ring-rose-400/50 text-rose-500 bg-rose-50"}`}
               >
-                {highCount.each} / {highCount.total}
-              </span>
-            </div>
-            <div
-              className={`flex items-center h-fit border p-2 rounded-xl gap-2 text-sm ${mediumCount.each === 0 ? "text-amber-300" : "text-amber-500 bg-amber-50"}`}
-            >
-              <span className="font-bold transition-all duration-300 ease-in-out">
-                Medium
-              </span>
-              <span
-                className={
-                  "font-semibold transition-all duration-300 ease-in-out"
-                }
+                <span className="text-sm font-semibold transition-all duration-300 ease-in-out">
+                  High
+                </span>
+                <span
+                  className={
+                    "font-semibold transition-all duration-300 ease-in-out"
+                  }
+                >
+                  {highCount.each} / {highCount.total}
+                </span>
+              </div>
+              <div
+                className={`grow flex flex-col justify-between items-center h-fit p-3 rounded-xl gap-2 ${mediumCount.each === 0 ? "text-amber-300" : "ring-2 ring-amber-400/50 text-amber-500 bg-amber-50"}`}
               >
-                {mediumCount.each} / {mediumCount.total}
-              </span>
-            </div>
-            <div
-              className={`flex items-center h-fit border p-2 rounded-xl gap-2 text-sm ${lowCount.each === 0 ? "text-sky-200" : "text-sky-400 bg-sky-50"}`}
-            >
-              <span className="font-bold transition-all duration-300 ease-in-out">
-                Low
-              </span>
-              <span
-                className={
-                  "font-semibold transition-all duration-300 ease-in-out"
-                }
+                <span className="text-sm font-bold transition-all duration-300 ease-in-out">
+                  Medium
+                </span>
+                <span
+                  className={
+                    "font-semibold transition-all duration-300 ease-in-out"
+                  }
+                >
+                  {mediumCount.each} / {mediumCount.total}
+                </span>
+              </div>
+              <div
+                className={`grow flex flex-col justify-between items-center h-fit p-3 rounded-xl gap-2 ${lowCount.each === 0 ? "text-sky-200" : "ring-2 ring-sky-400/50 text-sky-400 bg-sky-50"}`}
               >
-                {lowCount.each} / {lowCount.total}
-              </span>
+                <span className="text-sm font-bold transition-all duration-300 ease-in-out">
+                  Low
+                </span>
+                <span
+                  className={
+                    "font-semibold transition-all duration-300 ease-in-out"
+                  }
+                >
+                  {lowCount.each} / {lowCount.total}
+                </span>
+              </div>
             </div>
           </div>
         </div>
