@@ -1,9 +1,9 @@
-import { Ellipsis } from "lucide-react";
+import { Menu, Edit3, Ellipsis } from "lucide-react";
 import { useState, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { createPortal } from "react-dom";
 
-function RoadMapDetails() {
+function RoadMapSettings({ setIsToDosOpen }) {
   const [isOpen, setIsOpen] = useState(false);
   const buttonRef = useRef();
 
@@ -12,10 +12,21 @@ function RoadMapDetails() {
     if (!buttonRef.current) return {};
     const rect = buttonRef.current.getBoundingClientRect();
 
+    const windowWidth = window.innerWidth;
+    const MENU_WIDTH = 144; // 메뉴 너비
+
+    const isOverflowing = rect.right + MENU_WIDTH > windowWidth;
+
+    let leftPos;
+    if (isOverflowing) {
+      leftPos = rect.right + window.scrollX - MENU_WIDTH;
+    } else {
+      leftPos = rect.left + window.scrollX;
+    }
     return {
       // 스크롤 양을 고려한 절대 좌표 계산
       top: rect.bottom + window.scrollY + 8,
-      left: rect.left + window.scrollX, // 메뉴 너비에 맞춰 왼쪽으로 살짝 이동
+      left: leftPos, // 메뉴 너비에 맞춰 왼쪽으로 살짝 이동
     };
   };
   return (
@@ -28,7 +39,7 @@ function RoadMapDetails() {
           isOpen ? "bg-sky-100 text-sky-600" : "text-gray-400 hover:bg-gray-100"
         }`}
       >
-        <Ellipsis size={16} />
+        <Menu size={16} />
       </button>
       {/* 2. Portal을 사용한 메뉴 (AnimatePresence가 감싸고 있어야 함) */}
       <AnimatePresence>
@@ -54,10 +65,16 @@ function RoadMapDetails() {
             >
               <div className="flex flex-col text-sm font-medium text-gray-600">
                 <button
-                  onClick={() => handleModify(todo)}
+                  onClick={() => {
+                    setIsOpen(false);
+                    setIsToDosOpen((prev) => !prev);
+                  }}
                   className="flex items-center gap-2 p-2 rounded-lg hover:bg-sky-50 hover:text-sky-600 transition-colors"
                 >
-                  더 보기
+                  <Ellipsis size={14} /> ToDo 더 보기
+                </button>
+                <button className="flex items-center gap-2 p-2 rounded-lg hover:bg-sky-50 hover:text-sky-600 transition-colors border-t border-gray-50">
+                  <Edit3 size={14} /> 수정하기
                 </button>
               </div>
             </motion.div>
@@ -73,4 +90,4 @@ function Portal({ children }) {
   return createPortal(children, el);
 }
 
-export default RoadMapDetails;
+export default RoadMapSettings;

@@ -1,0 +1,177 @@
+[
+  {
+    "goal": "전공 학점 A+ 받기",
+    "completionCount": 4,
+    "due": "2025-12-18",
+    "completions": [
+      {
+        "id": 1,
+        "priority": 1,
+        "category": "학업",
+        "contents": "전공 시험 범위 복습하기",
+        "isCompleted": false
+      },
+      {
+        "id": 5,
+        "priority": 2,
+        "category": "학업",
+        "contents": "영어 회화 온라인 강의 듣기",
+        "isCompleted": true
+      },
+      {
+        "id": 9,
+        "priority": 3,
+        "category": "학업",
+        "contents": "도서관에서 참고 도서 대출",
+        "isCompleted": true
+      },
+      {
+        "id": 13,
+        "priority": 1,
+        "category": "학업",
+        "contents": "자격증 시험 접수하기",
+        "isCompleted": false
+      }
+    ]
+  },
+  {
+    "goal": "바디 프로필 도전하기",
+    "completionCount": 4,
+    "due": "2025-08-31",
+    "completions": [
+      {
+        "id": 2,
+        "priority": 2,
+        "category": "운동",
+        "contents": "아침 조깅 30분",
+        "isCompleted": true
+      },
+      {
+        "id": 7,
+        "priority": 3,
+        "category": "운동",
+        "contents": "자기 전 스트레칭",
+        "isCompleted": false
+      },
+      {
+        "id": 11,
+        "priority": 1,
+        "category": "운동",
+        "contents": "헬스장 PT 받기",
+        "isCompleted": false
+      },
+      {
+        "id": 15,
+        "priority": 2,
+        "category": "운동",
+        "contents": "하루 만보 걷기 달성",
+        "isCompleted": false
+      }
+    ]
+  },
+  {
+    "goal": "졸업 프로젝트 런칭",
+    "completionCount": 4,
+    "due": "2025-11-30",
+    "completions": [
+      {
+        "id": 3,
+        "priority": 1,
+        "category": "프로젝트",
+        "contents": "최종 기획안 제출",
+        "isCompleted": false
+      },
+      {
+        "id": 6,
+        "priority": 1,
+        "category": "프로젝트",
+        "contents": "팀 중간 발표 준비",
+        "isCompleted": false
+      },
+      {
+        "id": 10,
+        "priority": 2,
+        "category": "프로젝트",
+        "contents": "팀원 정기 회의 참석",
+        "isCompleted": false
+      },
+      {
+        "id": 18,
+        "priority": 1,
+        "category": "프로젝트",
+        "contents": "버그 수정 및 배포",
+        "isCompleted": false
+      }
+    ]
+  },
+  {
+    "goal": "밀린 과제 처리하기",
+    "completionCount": 4,
+    "due": "2025-11-20",
+    "completions": [
+      {
+        "id": 4,
+        "priority": 3,
+        "category": "과제",
+        "contents": "교양 수업 관련 자료 조사",
+        "isCompleted": false
+      },
+      {
+        "id": 8,
+        "priority": 1,
+        "category": "과제",
+        "contents": "프로그래밍 과제 코드 작성",
+        "isCompleted": false
+      },
+      {
+        "id": 12,
+        "priority": 2,
+        "category": "과제",
+        "contents": "발표 PPT 디자인 수정",
+        "isCompleted": true
+      },
+      {
+        "id": 16,
+        "priority": 1,
+        "category": "과제",
+        "contents": "에세이 초안 작성",
+        "isCompleted": false
+      }
+    ]
+  },
+  {
+    "goal": "자기계발 및 대외활동",
+    "completionCount": 4,
+    "due": "2025-12-10",
+    "completions": [
+      {
+        "id": 14,
+        "priority": 3,
+        "category": "프로젝트",
+        "contents": "경쟁사 앱 벤치마킹",
+        "isCompleted": true
+      },
+      {
+        "id": 17,
+        "priority": 2,
+        "category": "학업",
+        "contents": "스터디 그룹 모임",
+        "isCompleted": true
+      },
+      {
+        "id": 19,
+        "priority": 3,
+        "category": "운동",
+        "contents": "폼롤러 마사지",
+        "isCompleted": false
+      },
+      {
+        "id": 20,
+        "priority": 3,
+        "category": "과제",
+        "contents": "참고 문헌 정리",
+        "isCompleted": true
+      }
+    ]
+  }
+]

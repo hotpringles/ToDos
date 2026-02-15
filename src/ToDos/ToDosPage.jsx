@@ -10,6 +10,8 @@ import ToDo from "./ToDo";
 import DonutChart from "./DonutChart";
 import Calendar from "./Calendar";
 import RoadMapShow from "./RoadMapShow";
+import todo_data from "../mock_data/mock_todo.json";
+import roadmap_data from "../mock_data/mock_roadmap.json";
 
 const HIGH = 1;
 const MEDIUM = 2;
@@ -19,43 +21,7 @@ function ToDosPage() {
   const [selectedDate, setSelectedDate] = useState(startOfToday());
   const [priority, setPriority] = useState(HIGH);
   const [text, setText] = useState("");
-  const [todos, setTodos] = useState([
-    {
-      id: 1,
-      priority: HIGH,
-      category: "Inbox",
-      contents: "안녕",
-      isCompleted: false,
-    },
-    {
-      id: 2,
-      priority: MEDIUM,
-      category: "Inbox",
-      contents: "가을",
-      isCompleted: false,
-    },
-    {
-      id: 3,
-      priority: LOW,
-      category: "Inbox",
-      contents: "여름",
-      isCompleted: false,
-    },
-    {
-      id: 4,
-      priority: HIGH,
-      category: "Inbox",
-      contents: "계절",
-      isCompleted: false,
-    },
-    {
-      id: 5,
-      priority: LOW,
-      category: "Inbox",
-      contents: "눈물",
-      isCompleted: false,
-    },
-  ]);
+  const [todos, setTodos] = useState(todo_data);
 
   const [categories, setCategories] = useState([
     "학업",
@@ -65,18 +31,7 @@ function ToDosPage() {
   ]);
   const [selectedCategory, setSelectedCategory] = useState(categories[0]);
 
-  const [roadmaps, setRoadMaps] = useState([
-    {
-      goal: "코딩테스트 준비",
-      completions: ["JS 1장", "JS 2장", "JS 3장"],
-      completionCount: 3,
-    },
-    {
-      goal: "토익 준비",
-      completions: ["준동사", "분사구문", "단어", "Part7 문제풀기"],
-      completionCount: 4,
-    },
-  ]);
+  const [roadmaps, setRoadMaps] = useState(roadmap_data);
   const goals = roadmaps.map((rm) => rm.goal);
   const [selectedRoadMap, setSelectedRoadMap] = useState("");
 
