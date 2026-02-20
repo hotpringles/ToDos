@@ -2,9 +2,11 @@ import { useState } from "react";
 import { ListFilter, Plus } from "lucide-react";
 import RoadMap from "./RoadMap";
 import roadmap_data from "../mock_data/mock_roadmap.json";
+import todo_data from "../mock_data/mock_todo.json";
 
 function RoadMapPage() {
   const [roadmaps, setRoadMaps] = useState(roadmap_data);
+  const [todos, setTodos] = useState(todo_data);
 
   return (
     <div className="min-h-[100vh] p-8 bg-gray-100 flex flex-col">
@@ -23,7 +25,7 @@ function RoadMapPage() {
       </div>
       <div className="grid grid-cols-2 gap-4">
         {roadmaps.map((rm, i) => (
-          <RoadMap roadmap={rm} key={i} />
+          <RoadMap roadmap={rm} key={i} todos={todos} />
         ))}
       </div>
     </div>

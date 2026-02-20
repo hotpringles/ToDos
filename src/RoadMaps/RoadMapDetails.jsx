@@ -1,4 +1,4 @@
-import { Menu, Edit3, Ellipsis } from "lucide-react";
+import { Menu, Edit3, Search } from "lucide-react";
 import { useState, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { createPortal } from "react-dom";
@@ -71,7 +71,8 @@ function RoadMapSettings({ setIsToDosOpen }) {
                   }}
                   className="flex items-center gap-2 p-2 rounded-lg hover:bg-sky-50 hover:text-sky-600 transition-colors"
                 >
-                  <Ellipsis size={14} /> ToDo 더 보기
+                  <Search size={14} className="-translate-y-[1px]" /> 자세히
+                  보기
                 </button>
                 <button className="flex items-center gap-2 p-2 rounded-lg hover:bg-sky-50 hover:text-sky-600 transition-colors border-t border-gray-50">
                   <Edit3 size={14} /> 수정하기

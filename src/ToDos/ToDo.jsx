@@ -49,10 +49,10 @@ function ToDo({
     <div className="flex items-center gap-4 h-[90px] p-4 border-b border-gray-200">
       <button
         onClick={handleToggle}
-        className={`w-6 h-6 border border-gray-200 rounded-md flex justify-center items-center ${todo.isCompleted ? "bg-gray-100" : ""}`}
+        className={`w-6 h-6 border border-gray-200 rounded-md flex justify-center items-center ${!!todo.completedAt ? "bg-gray-100" : ""}`}
       >
         {/* <AnimatePresence> */}
-        {todo.isCompleted && (
+        {!!todo.completedAt && (
           <motion.div
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -67,7 +67,7 @@ function ToDo({
       <div className="grow flex flex-col">
         <div className="flex items-baseline gap-1">
           <span
-            className={`mr-1 text-2xl font-semibold ${todo.isCompleted ? "line-through text-gray-400" : ""}`}
+            className={`mr-1 text-2xl font-semibold ${!!todo.completedAt ? "line-through text-gray-400" : ""}`}
           >
             {todo.contents}
           </span>

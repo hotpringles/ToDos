@@ -1,6 +1,6 @@
 import WeeklyCalendar from "./WeeklyCalendar";
 import AddBox from "./AddBox";
-import { format, startOfToday } from "date-fns";
+import { format, startOfToday, compareDesc } from "date-fns";
 import { useState, useRef, useEffect, useMemo } from "react";
 import { v4 as uuidv4 } from "uuid";
 import CategorySelect from "./CategorySelect";
@@ -33,7 +33,7 @@ function ToDosPage() {
 
   const [roadmaps, setRoadMaps] = useState(roadmap_data);
   const goals = roadmaps.map((rm) => rm.goal);
-  const [selectedRoadMap, setSelectedRoadMap] = useState("");
+  const [selectedRoadMap, setSelectedRoadMap] = useState(null);
 
   const [edittingTodo, setEdittingTodo] = useState(null);
 
@@ -45,12 +45,12 @@ function ToDosPage() {
 
   useEffect(() => {
     setTotalCount(0);
-    todos.forEach((todo) => {
-      if (todo.isCompleted) {
+    sortedTodos.forEach((todo) => {
+      if (!!todo.completedAt) {
         setTotalCount((prev) => prev + 1);
       }
     });
-  }, [todos]);
+  }, [todos, selectedDate]);
 
   useEffect(() => {
     setHighCount({
@@ -65,41 +65,55 @@ function ToDosPage() {
       each: 0,
       total: 0,
     });
-    todos.forEach((todo) => {
+    sortedTodos.forEach((todo) => {
       if (todo.priority === HIGH) {
         setHighCount((prev) =>
-          todo.isCompleted
+          !!todo.completedAt
             ? { each: prev.each + 1, total: prev.total + 1 }
             : { ...prev, total: prev.total + 1 },
         );
       } else if (todo.priority === MEDIUM) {
         setMediumCount((prev) =>
-          todo.isCompleted
+          !!todo.completedAt
             ? { each: prev.each + 1, total: prev.total + 1 }
             : { ...prev, total: prev.total + 1 },
         );
       } else {
         setLowCount((prev) =>
-          todo.isCompleted
+          !!todo.completedAt
             ? { each: prev.each + 1, total: prev.total + 1 }
             : { ...prev, total: prev.total + 1 },
         );
       }
     });
-  }, [todos]);
+  }, [todos, selectedDate]);
 
   const handleToggle = (id) => {
+    const now = new Date().toISOString();
     setTodos((prev) =>
       prev.map((todo) =>
-        todo.id === id ? { ...todo, isCompleted: !todo.isCompleted } : todo,
+        todo.id === id
+          ? !todo.completedAt
+            ? { ...todo, completedAt: now }
+            : { ...todo, completedAt: null }
+          : todo,
       ),
     );
   };
   const sortedTodos = useMemo(() => {
-    return [...todos].sort((a, b) => {
-      return a.isCompleted - b.isCompleted || a.priority - b.priority;
+    if (!todos) return [];
+
+    const todosTemp = todos.filter(
+      (item) => item.date === format(selectedDate, "yyyy-MM-dd"),
+    );
+    return [...todosTemp].sort((a, b) => {
+      return (
+        !!a.completedAt - !!b.completedAt ||
+        a.priority - b.priority ||
+        compareDesc(new Date(a.updatedAt), new Date(b.updatedAt))
+      );
     });
-  }, [todos]);
+  }, [todos, selectedDate]);
 
   const [isAtBottom, setIsAtBottom] = useState(false);
   const scrollRef = useRef(null);
@@ -138,6 +152,7 @@ function ToDosPage() {
   }, [todos]);
 
   const handleAddTodo = () => {
+    const now = new Date().toISOString();
     if (!edittingTodo) {
       setTodos((prev) => [
         ...prev,
@@ -146,10 +161,13 @@ function ToDosPage() {
           priority: priority,
           category: selectedCategory,
           contents: text,
-          isCompleted: false,
           date: selectedDate,
+          createdAt: now,
+          updatedAt: now,
+          completedAt: null,
           time: null,
           duration: null,
+          roadmap: selectedRoadMap,
         },
       ]);
     } else {
@@ -160,8 +178,10 @@ function ToDosPage() {
           priority: priority,
           category: selectedCategory,
           contents: text,
-          isCompleted: edittingTodo.isCompleted,
           date: edittingTodo.date,
+          createdAt: edittingTodo.createdAt,
+          updatedAt: now,
+          completedAt: edittingTodo.completedAt,
           time: edittingTodo.time,
           duration: edittingTodo.duration,
         },
@@ -188,22 +208,7 @@ function ToDosPage() {
           <div className="p-4 border-gray-200 border-b flex items-center">
             <span className="font-bold text-md">Daily task</span>
           </div>
-          {/* <div
-            className="grow overflow-y-auto
-            [mask-image:linear-gradient(to_bottom,black_90%,transparent_100%)]
-            [-webkit-mask-image:linear-gradient(to_bottom,black_90%,transparent_100%)]"
-          >
-            {sortedTodos.map((todo) => (
-              <ToDo
-                key={todo.id}
-                priority={todo.priority}
-                contents={todo.contents}
-                category={todo.category}
-                isCompleted={todo.isCompleted}
-                handleToggle={() => handleToggle(todo.id)}
-              />
-            ))}
-          </div> */}
+
           {/* --- [수정된 리스트 영역] --- */}
           <div
             ref={scrollRef}
@@ -268,7 +273,7 @@ function ToDosPage() {
         </div>
         <div className="w-[300px] flex flex-col gap-3">
           {/* <Calendar todos={todos} selectedDate={selectedDate} /> */}
-          <RoadMapShow roadmaps={roadmaps} />
+          <RoadMapShow roadmaps={roadmaps} todos={todos} />
           <div
             className={`h-fit flex flex-col gap-2 rounded-xl border border-gray-200 shadow-md p-4 bg-white ${totalCount === 0 ? "text-gray-400" : "text-black"}`}
           >
@@ -280,7 +285,7 @@ function ToDosPage() {
                 </span>
                 <span className="text-md font-semibold transition-all duration-300 ease-in-out">
                   <span className="text-3xl">{totalCount}</span> /{" "}
-                  {todos.length}
+                  {sortedTodos.length}
                 </span>
               </div>
             </div>
