@@ -281,7 +281,7 @@ function ToDosPage() {
               <DonutChart percent={(totalCount / todos.length) * 100} />
               <div className="flex flex-col text-right">
                 <span className="text-sm font-semibold transition-all duration-300 ease-in-out">
-                  Ahcheivement Rate
+                  Achievement Rate
                 </span>
                 <span className="text-md font-semibold transition-all duration-300 ease-in-out">
                   <span className="text-3xl">{totalCount}</span> /{" "}

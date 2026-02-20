@@ -1,6 +1,6 @@
 import RoadMapSettings from "./RoadMapDetails";
 import RoadMapItem from "./RoadMapItem";
-import ToDosShow from "./ToDosShow";
+import ToDosModal from "./ToDosModal";
 import { createPortal } from "react-dom";
 import { format, parse, parseISO } from "date-fns";
 import { useState, useMemo } from "react";
@@ -18,7 +18,7 @@ function RoadMap({ roadmap, todos }) {
   const [isToDosOpen, setIsToDosOpen] = useState(false);
   const startObj = parseISO(roadmap.createdAt);
   const dueObj = parse(roadmap.dueDate, "yyyy-MM-dd", new Date());
-  const due = format(dueObj, "EEE dd");
+  const due = format(dueObj, "MMM dd");
   const completions = useMemo(() => {
     return todos.filter(
       (todo) => !!todo.completedAt && todo.roadmap === roadmap.goal,
@@ -46,7 +46,7 @@ function RoadMap({ roadmap, todos }) {
       </div>
       {isToDosOpen && (
         <Portal>
-          <ToDosShow
+          <ToDosModal
             completions={completions}
             progressing={progressing}
             startObj={startObj}
